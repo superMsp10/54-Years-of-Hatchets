@@ -14,12 +14,18 @@ public class UIManager : MonoBehaviour
     public GameObject OnHover;
 
     public AutoCam camController;
+    public Camera cam;
+    bool freeMove = true;
 
     public GameObject collection;
-
     public List<_Selectable> selected = new List<_Selectable>();
 
-    bool freeMove = true;
+    Texture2D t;
+    GUIStyle s;
+    public Color selection;
+
+    public Vector2 start, end;
+    bool dragging = false;
 
     void Awake()
     {
@@ -30,6 +36,12 @@ public class UIManager : MonoBehaviour
     void Start()
     {
         OnHover.SetActive(false);
+        t = new Texture2D(1, 1);
+        s = new GUIStyle();
+        t.wrapMode = TextureWrapMode.Repeat;
+        t.SetPixel(0, 0, selection);
+        t.Apply();
+        s.normal.background = t;
 
     }
 
@@ -57,6 +69,37 @@ public class UIManager : MonoBehaviour
                 camController.transform.Translate(Vector3.left);
 
             }
+        }
+
+
+
+    }
+
+    void OnGUI()
+    {
+
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            start = Event.current.mousePosition;
+
+            dragging = true;
+        }
+
+
+        if (dragging)
+        {
+            end = Event.current.mousePosition;
+
+            float height = end.y - start.y;
+            float width = end.x - start.x;
+
+            GUI.Label(new Rect(start.x, start.y, width, height), "", s);
+        }
+
+        if (Input.GetMouseButtonUp(0))
+        {
+            dragging = false;
         }
 
     }
