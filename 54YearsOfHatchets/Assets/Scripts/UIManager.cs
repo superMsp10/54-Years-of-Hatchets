@@ -24,8 +24,12 @@ public class UIManager : MonoBehaviour
     GUIStyle s;
     public Color selection;
 
-    public Vector2 start, end;
+    Vector2 start, end;
+    Vector2 worldStart, worldEnd;
     bool dragging = false;
+    public LayerMask selectableLayers;
+
+
 
     void Awake()
     {
@@ -48,6 +52,19 @@ public class UIManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        if (Input.GetKey(KeyCode.Q) && Input.GetKey(KeyCode.LeftShift))
+        {
+            if (!freeMove)
+            {
+                camController.enabled = false;
+                freeMove = true;
+            }
+            else
+                ResetCamera();
+
+        }
+
         if (freeMove)
         {
             if (Input.GetKey(KeyCode.W))
@@ -82,6 +99,7 @@ public class UIManager : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             start = Event.current.mousePosition;
+            worldStart = Input.mousePosition;
 
             dragging = true;
         }
@@ -95,11 +113,42 @@ public class UIManager : MonoBehaviour
             float width = end.x - start.x;
 
             GUI.Label(new Rect(start.x, start.y, width, height), "", s);
+
+            worldEnd = Input.mousePosition;
+
         }
 
-        if (Input.GetMouseButtonUp(0))
+        if (Input.GetMouseButtonUp(0) && dragging)
         {
             dragging = false;
+
+            RaycastHit hit;
+            Ray ray = cam.ScreenPointToRay(worldStart);
+            Vector3 cubeStart = Vector3.zero, cubeEnd = Vector3.zero, center = Vector3.zero;
+            if (Physics.Raycast(ray, out hit))
+                cubeStart = hit.point;
+            else
+                return;
+
+            ray = cam.ScreenPointToRay(worldEnd);
+            if (Physics.Raycast(ray, out hit))
+                cubeEnd = hit.point;
+            else
+                return;
+
+            center = Vector3.Lerp(cubeStart, cubeEnd, 0.5f);
+
+            foreach (Collider c in Physics.OverlapSphere(center, Vector3.Distance(center, cubeStart), selectableLayers))
+            {
+                _Selectable s = c.GetComponent<_Selectable>();
+                if (s != null)
+                {
+                    if (!s.Selected)
+                        AddSelected(s);
+                    else
+                        RemoveSelected(s);
+                }
+            }
         }
 
     }
@@ -107,7 +156,6 @@ public class UIManager : MonoBehaviour
     public void AddSelected(_Selectable s)
     {
         selected.Add(s);
-        ResetCamera();
 
         s.OnSelected();
     }
@@ -116,7 +164,6 @@ public class UIManager : MonoBehaviour
     {
         selected.Remove(s);
         s.OnDeselected();
-        ResetCamera();
 
     }
 
