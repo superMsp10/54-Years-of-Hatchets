@@ -17,7 +17,6 @@ public class Person : MonoBehaviour, ISelectable
     public Renderer r;
 
     public float maxWanderDistance = 10f;
-    bool moving = false;
     // Use this for initialization
     void Start()
     {
@@ -27,36 +26,41 @@ public class Person : MonoBehaviour, ISelectable
     // Update is called once per frame
     void Update()
     {
-        moving = true;
-        if (!agent.pathPending)
+        if (Job == "Moving")
         {
-            if (agent.remainingDistance <= agent.stoppingDistance)
+            if (!agent.pathPending)
             {
-                if (!agent.hasPath || agent.velocity.sqrMagnitude == 0f)
+                if (agent.remainingDistance <= agent.stoppingDistance)
                 {
-                    if (Job == "Moving")
+                    if (agent.velocity.sqrMagnitude == 0f)
+                    {
                         Job = "";
-                    if (Selected)
-                        UIManager.thisUI.UpdateSelectedView(this);
-                    moving = false;
+                        if (Selected)
+                            UIManager.thisUI.UpdateSelectedView(this);
+                    }
                 }
             }
-        }
 
-        if (target != null)
+        }
+        //if (!agent.pathPending)
+        //{
+        //    if (agent.remainingDistance <= agent.stoppingDistance)
+        //    {
+        //        if (!agent.hasPath || agent.velocity.sqrMagnitude == 0f)
+        //        {
+
+        //        }
+        //    }
+        //}
+
+        if (Job == "" && UnityEngine.Random.Range(0, 240) == 1)
         {
-            if (Job == "Moving")
-                agent.SetDestination(target);
-            else if (Job == "" && !moving)
-            {
-                Vector3 randomDirection = UnityEngine.Random.insideUnitSphere * maxWanderDistance;
-                target = randomDirection;
-                agent.SetDestination(target);
-
-            }
+            UnityEngine.Random r = new UnityEngine.Random();
+            Vector3 randomDirection = UnityEngine.Random.insideUnitSphere * maxWanderDistance;
+            target = transform.position + randomDirection;
         }
 
-
+        if (target != null) agent.SetDestination(target);
 
     }
 

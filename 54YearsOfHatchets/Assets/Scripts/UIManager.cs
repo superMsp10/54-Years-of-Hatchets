@@ -143,16 +143,32 @@ public class UIManager : MonoBehaviour
 
     public void RemoveSelected(ISelectable s)
     {
-        selected.Remove(s);
-        s.OnDeselected();
+        if (s != null)
+        {
+            selected.Remove(s);
+            s.OnDeselected();
 
-        Destroy(content.transform.FindChild(s.Name).gameObject);
+            Destroy(content.transform.FindChild(s.Name).gameObject);
 
-        if (selected.Count <= 0)
-            selectedView.SetActive(false);
+            if (selected.Count <= 0)
+                selectedView.SetActive(false);
+        }
+
+    }
+
+    public void RemoveAll()
+    {
+
+        for (int i = selected.Count - 1; i >= 0; i--)
+        {
+
+            RemoveSelected(selected[i]);
+        }
+
 
 
     }
+
 
     public void ShowHoverOver(string name, string description, string toolTip)
     {

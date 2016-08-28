@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityStandardAssets.Cameras;
+using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour
 {
@@ -11,10 +12,12 @@ public class GameManager : MonoBehaviour
     bool freeMove = true;
     public GameObject collection;
 
+    public List<Person> people = new List<Person>();
+    public int startPeople = 25;
+    public GameObject person;
+    public Transform spawnSpot;
 
     UIManager thisUI;
-
-
     void Awake()
     {
         thisGameManager = this;
@@ -24,6 +27,12 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         thisUI = UIManager.thisUI;
+
+        for (int i = 0; i < startPeople; i++)
+        {
+            GameObject g = (GameObject)Instantiate(person, spawnSpot.position, Quaternion.identity);
+            people.Add(g.GetComponent<Person>());
+        }
     }
 
     // Update is called once per frame
@@ -42,9 +51,15 @@ public class GameManager : MonoBehaviour
 
         }
 
-        if (!freeMove) ResetCamera();
+        if (Input.GetKeyDown(KeyCode.E) && Input.GetKey(KeyCode.LeftShift))
+        {
+            thisUI.RemoveAll();
+        }
 
-        if (freeMove)
+
+        if (!freeMove)
+            ResetCamera();
+        else
         {
             if (Input.GetKey(KeyCode.W))
             {
@@ -77,7 +92,7 @@ public class GameManager : MonoBehaviour
             else
                 return;
 
-         
+
             foreach (ISelectable s in thisUI.selected)
             {
                 Person p = s.IGameObject.GetComponent<Person>();
