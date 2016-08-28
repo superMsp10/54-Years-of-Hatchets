@@ -3,6 +3,8 @@ using UnityEngine.UI;
 using System.Collections;
 using UnityStandardAssets.Cameras;
 using System.Collections.Generic;
+using System;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -35,6 +37,9 @@ public class GameManager : MonoBehaviour
     bool warTime = false;
     public GameObject NriabTribe;
 
+    public GameObject GOPanel;
+    public GameObject ViewPanel;
+
     void Awake()
     {
         thisGameManager = this;
@@ -64,6 +69,11 @@ public class GameManager : MonoBehaviour
     void Update()
     {
 
+        if (people.Count <= 5)
+        {
+            GameOver();
+        }
+
         UpdateControls();
         UpdateSun();
 
@@ -87,6 +97,21 @@ public class GameManager : MonoBehaviour
 
         }
 
+    }
+
+    public void GameOver()
+    {
+        thisUI.OnHover.SetActive(false);
+        thisUI.selectedView.SetActive(false);
+        GOPanel.SetActive(true);
+        ViewPanel.SetActive(false);
+
+    }
+
+
+    public void Restart()
+    {
+        SceneManager.LoadScene(0);
     }
 
     void SpawnEnemies(int num)
