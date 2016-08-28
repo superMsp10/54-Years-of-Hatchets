@@ -13,11 +13,8 @@ public class UIManager : MonoBehaviour
     public Text Tooltip;
     public GameObject OnHover;
 
-    public AutoCam camController;
     public Camera cam;
-    bool freeMove = true;
 
-    public GameObject collection;
     public List<_Selectable> selected = new List<_Selectable>();
 
     Texture2D t;
@@ -51,49 +48,6 @@ public class UIManager : MonoBehaviour
         t.SetPixel(0, 0, selection);
         t.Apply();
         s.normal.background = t;
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-        if (Input.GetKeyDown(KeyCode.Q) && Input.GetKey(KeyCode.LeftShift))
-        {
-            if (!freeMove)
-            {
-                camController.enabled = false;
-                freeMove = true;
-            }
-            else
-                ResetCamera();
-
-        }
-
-        if (freeMove)
-        {
-            if (Input.GetKey(KeyCode.W))
-            {
-                camController.transform.Translate(Vector3.forward);
-            }
-            if (Input.GetKey(KeyCode.S))
-            {
-                camController.transform.Translate(Vector3.back);
-
-            }
-            if (Input.GetKey(KeyCode.D))
-            {
-                camController.transform.Translate(Vector3.right);
-
-            }
-            if (Input.GetKey(KeyCode.A))
-            {
-                camController.transform.Translate(Vector3.left);
-
-            }
-        }
-
-
 
     }
 
@@ -210,28 +164,21 @@ public class UIManager : MonoBehaviour
 
     }
 
-    public void ResetCamera()
+    public void UpdateSelectedView(_Selectable s)
     {
-        if (selected.Count > 0)
+        Transform g = content.transform.FindChild(s.Name);
+        g.FindChild("Description").GetComponent<Text>().text = s.Description;
+        Person p = s.IGameObject.GetComponent<Person>();
+        if (p != null)
         {
-            camController.enabled = true;
-            freeMove = false;
-
-            Vector3 average = Vector3.zero;
-            for (int i = 0; i < selected.Count; i++)
-            {
-                average += selected[i].location;
-            }
-
-            collection.transform.position = average / selected.Count;
-            camController.SetTarget(collection.transform);
+            g.transform.FindChild("Job").GetComponent<Text>().text = p.Job;
         }
         else
         {
-            camController.enabled = false;
-            freeMove = true;
+            g.transform.FindChild("Job").GetComponent<Text>().text = s.Tooltip;
         }
     }
+
 
     public void HideHoverOver()
     {

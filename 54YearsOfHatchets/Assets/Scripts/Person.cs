@@ -6,7 +6,7 @@ public class Person : MonoBehaviour, _Selectable
 {
 
     string _description = "A person from the Arcadio tribe";
-    string _tooltip = "Right Click to Select";
+    string _tooltip = "Left Click to Select";
     public string Job = "";
     bool _selected = false;
 
@@ -23,6 +23,11 @@ public class Person : MonoBehaviour, _Selectable
     void Update()
     {
 
+    }
+
+    public void Move(Vector3 pos)
+    {
+        Job = "Moving...";
     }
 
     public string Description
@@ -122,13 +127,13 @@ public class Person : MonoBehaviour, _Selectable
     void OnMouseOver()
     {
 
-        if (Input.GetMouseButtonDown(1))
-        {
-            if (!Selected)
-                UIManager.thisUI.AddSelected(this);
-            else
-                UIManager.thisUI.RemoveSelected(this);
-        }
+        //if (Input.GetMouseButtonDown(1))
+        //{
+        //    if (!Selected)
+        //        UIManager.thisUI.AddSelected(this);
+        //    else
+        //        UIManager.thisUI.RemoveSelected(this);
+        //}
     }
 
 
