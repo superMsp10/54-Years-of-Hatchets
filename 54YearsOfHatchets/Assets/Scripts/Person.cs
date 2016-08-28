@@ -5,8 +5,8 @@ using System;
 public class Person : MonoBehaviour, ISelectable
 {
 
-    string _description = "A person from the Arcadio tribe";
-    string _tooltip = "Left Click and Drag to Select";
+    protected string _description = "";
+    protected string _tooltip = "Left Click and Drag to Select";
     public string Job = "";
     bool _selected = false;
 
@@ -21,51 +21,103 @@ public class Person : MonoBehaviour, ISelectable
     public Pickup pickedUP;
     public float PickupDistance = 2f;
     public LayerMask pickUps;
-    // Use this for initialization
-    void Start()
-    {
 
-    }
+    public string tribe;
+    public int health = 20;
+    public int damage = 1;
+    public float damageTime;
+    protected float lastDamage;
+
+    public int targetted = 0;
+    public Person aggrovated;
+    public Color Attacking;
+
+
 
     // Update is called once per frame
     void Update()
     {
-        if (target != null) agent.SetDestination(target);
-        if (Job == "Moving")
+        if (aggrovated != null)
         {
-            if (!agent.pathPending)
+            Attack();
+        }
+        else
+        {
+            if (target != null) agent.SetDestination(target);
+            this.r.material.color = Color.white;
+            if (Job == "Moving")
             {
-                if (agent.remainingDistance <= agent.stoppingDistance)
+                if (!agent.pathPending)
                 {
-                    if (agent.velocity.sqrMagnitude == 0f)
+                    if (agent.remainingDistance <= agent.stoppingDistance)
                     {
-                        Job = "";
-                        if (Selected)
-                            UIManager.thisUI.UpdateSelectedView(this);
+                        if (agent.velocity.sqrMagnitude == 0f)
+                        {
+                            Job = "";
+                            if (Selected)
+                                UIManager.thisUI.UpdateSelectedView(this);
+                        }
                     }
                 }
+
+            }
+
+            if (Job == "" && UnityEngine.Random.Range(0, 240) == 1)
+            {
+                UnityEngine.Random r = new UnityEngine.Random();
+                Vector3 randomDirection = UnityEngine.Random.insideUnitSphere * maxWanderDistance;
+                target = transform.position + randomDirection;
             }
 
         }
-        //if (!agent.pathPending)
-        //{
-        //    if (agent.remainingDistance <= agent.stoppingDistance)
-        //    {
-        //        if (!agent.hasPath || agent.velocity.sqrMagnitude == 0f)
-        //        {
 
-        //        }
-        //    }
-        //}
+    }
 
-        if (Job == "" && UnityEngine.Random.Range(0, 240) == 1)
+    protected void Attack()
+    {
+
+        agent.SetDestination(aggrovated.transform.position);
+
+        if (agent.remainingDistance <= agent.stoppingDistance)
         {
-            UnityEngine.Random r = new UnityEngine.Random();
-            Vector3 randomDirection = UnityEngine.Random.insideUnitSphere * maxWanderDistance;
-            target = transform.position + randomDirection;
+            r.material.color = Attacking;
+            if (Time.time - lastDamage > damageTime)
+            {
+                if (aggrovated.TakeDamage(damage, this))
+                    r.material.color = Color.white;
+
+                lastDamage = Time.time;
+
+
+            }
+        }
+        else
+        {
+            r.material.color = Color.white;
         }
 
+        Job = "Attack";
+    }
 
+    public bool TakeDamage(int dmg, Person attacker)
+    {
+        aggrovated = attacker;
+        health -= dmg;
+        if (Selected)
+            UIManager.thisUI.UpdateSelectedView(this);
+
+        if (health <= 0)
+        {
+            if (Selected)
+                UIManager.thisUI.RemoveSelected(this);
+            if (tribe == "Arcadio")
+            {
+                GameManager.thisGameManager.people.Remove(this);
+            }
+            Destroy(this.gameObject);
+            return true;
+        }
+        return false;
     }
 
     public void PickupItem(string pickupType)
@@ -191,13 +243,12 @@ public class Person : MonoBehaviour, ISelectable
     {
         Selected = false;
         r.material.shader = normal;
-
     }
 
 
     void OnMouseEnter()
     {
-        UIManager.thisUI.ShowHoverOver(Name, Description, Tooltip);
+        UIManager.thisUI.ShowHoverOver(Name, Description, Tooltip, health.ToString());
 
     }
 

@@ -33,6 +33,7 @@ public class GameManager : MonoBehaviour
 
     int years = 0;
     bool warTime = false;
+    public GameObject NriabTribe;
 
     void Awake()
     {
@@ -51,8 +52,12 @@ public class GameManager : MonoBehaviour
         {
             Vector3 randomDirection = UnityEngine.Random.insideUnitSphere * 10f;
             GameObject g = (GameObject)Instantiate(person, new Vector3(spawnSpot.position.x + randomDirection.x, 0.5f, spawnSpot.position.z + randomDirection.z), Quaternion.identity);
-            people.Add(g.GetComponent<Person>());
+            Person p = g.GetComponent<Person>();
+            people.Add(p);
+            p.tribe = "Arcadio";
+            p.Description = "A person from the Arcadio tribe";
         }
+
     }
 
     // Update is called once per frame
@@ -71,14 +76,30 @@ public class GameManager : MonoBehaviour
             thisUI.yearNum.text = years.ToString();
         }
 
-        if (years >= 54 && warTime == false)
+        if (years == 54 && warTime == false)
         {
             warTime = true;
             Time.timeScale = 1f;
             thisUI.yearSpeed.text = "(X" + Time.timeScale.ToString() + ")";
             thisUI.yearSpeed.color = Color.grey;
+            SpawnEnemies(100);
+
+
         }
 
+    }
+
+    void SpawnEnemies(int num)
+    {
+        Vector3 randomDirection = UnityEngine.Random.insideUnitSphere * 100f;
+
+        for (int i = 0; i < num; i++)
+        {
+            GameObject g = (GameObject)Instantiate(NriabTribe, new Vector3(spawnSpot.position.x + randomDirection.x, 0.5f, spawnSpot.position.z + randomDirection.z), Quaternion.identity);
+            Person p = g.GetComponent<Person>();
+            p.tribe = "Nairb";
+            p.Description = "A person from the Nriab tribe";
+        }
     }
 
     void UpdateControls()
@@ -159,6 +180,8 @@ public class GameManager : MonoBehaviour
             if (Physics.Raycast(ray, out hit))
             {
                 Pickup pu = hit.collider.gameObject.GetComponent<Pickup>();
+                Person person = hit.collider.gameObject.GetComponent<Person>();
+
                 if (pu != null)
                 {
                     foreach (ISelectable s in thisUI.selected)
@@ -169,6 +192,22 @@ public class GameManager : MonoBehaviour
                             p.PickupItem(pu.pickUpType);
                             thisUI.UpdateSelectedView(s);
                         }
+                    }
+                }
+                else if (person != null)
+                {
+                    if (person.tribe != "Arcadio")
+                    {
+                        foreach (ISelectable s in thisUI.selected)
+                        {
+                            Person p = s.IGameObject.GetComponent<Person>();
+                            if (p != null)
+                            {
+                                p.aggrovated = person;
+                                thisUI.UpdateSelectedView(s);
+                            }
+                        }
+
                     }
                 }
                 else

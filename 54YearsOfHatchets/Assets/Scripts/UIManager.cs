@@ -11,6 +11,8 @@ public class UIManager : MonoBehaviour
     public Text Name;
     public Text Description;
     public Text Tooltip;
+    public Text Health;
+
     public GameObject OnHover;
 
     public Camera cam;
@@ -132,11 +134,14 @@ public class UIManager : MonoBehaviour
         Person p = s.IGameObject.GetComponent<Person>();
         if (p != null)
         {
+            g.transform.FindChild("Health").GetComponent<Text>().text = p.health.ToString();
             g.transform.FindChild("Job").GetComponent<Text>().text = p.Job;
         }
         else
         {
             g.transform.FindChild("Job").GetComponent<Text>().text = s.Tooltip;
+            g.transform.FindChild("Health").gameObject.SetActive(false);
+
         }
 
 
@@ -171,6 +176,17 @@ public class UIManager : MonoBehaviour
     }
 
 
+    public void ShowHoverOver(string name, string description, string toolTip, string hp)
+    {
+        OnHover.SetActive(true);
+
+        Name.text = name;
+        Description.text = description;
+        Tooltip.text = toolTip;
+        Health.text = hp;
+
+
+    }
     public void ShowHoverOver(string name, string description, string toolTip)
     {
         OnHover.SetActive(true);
@@ -178,6 +194,8 @@ public class UIManager : MonoBehaviour
         Name.text = name;
         Description.text = description;
         Tooltip.text = toolTip;
+        Health.gameObject.SetActive(false);
+
 
     }
 
@@ -189,6 +207,8 @@ public class UIManager : MonoBehaviour
         if (p != null)
         {
             g.transform.FindChild("Job").GetComponent<Text>().text = p.Job;
+            g.transform.FindChild("Health").GetComponent<Text>().text = p.health.ToString();
+
         }
         else
         {
