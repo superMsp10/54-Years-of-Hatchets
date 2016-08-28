@@ -2,7 +2,7 @@
 using System.Collections;
 using System;
 
-public class Person : MonoBehaviour, _Selectable
+public class Person : MonoBehaviour, ISelectable
 {
 
     string _description = "A person from the Arcadio tribe";
@@ -10,9 +10,14 @@ public class Person : MonoBehaviour, _Selectable
     public string Job = "";
     bool _selected = false;
 
+    public Vector3 target; // target to aim for
+    public NavMeshAgent agent; // the navmesh agent required for the path finding
+
     public Shader normal, highlighted;
     public Renderer r;
 
+    public float maxWanderDistance = 10f;
+    bool moving = false;
     // Use this for initialization
     void Start()
     {
@@ -22,12 +27,45 @@ public class Person : MonoBehaviour, _Selectable
     // Update is called once per frame
     void Update()
     {
+        moving = true;
+        if (!agent.pathPending)
+        {
+            if (agent.remainingDistance <= agent.stoppingDistance)
+            {
+                if (!agent.hasPath || agent.velocity.sqrMagnitude == 0f)
+                {
+                    if (Job == "Moving")
+                        Job = "";
+                    if (Selected)
+                        UIManager.thisUI.UpdateSelectedView(this);
+                    moving = false;
+                }
+            }
+        }
+
+        if (target != null)
+        {
+            if (Job == "Moving")
+                agent.SetDestination(target);
+            else if (Job == "" && !moving)
+            {
+                Vector3 randomDirection = UnityEngine.Random.insideUnitSphere * maxWanderDistance;
+                target = randomDirection;
+                agent.SetDestination(target);
+
+            }
+        }
+
+
 
     }
 
-    public void Move(Vector3 pos)
+
+
+    public void MoveToTarget(Vector3 pos)
     {
-        Job = "Moving...";
+        Job = "Moving";
+        target = pos;
     }
 
     public string Description

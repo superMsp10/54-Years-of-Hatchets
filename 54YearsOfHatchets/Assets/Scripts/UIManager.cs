@@ -15,7 +15,7 @@ public class UIManager : MonoBehaviour
 
     public Camera cam;
 
-    public List<_Selectable> selected = new List<_Selectable>();
+    public List<ISelectable> selected = new List<ISelectable>();
 
     Texture2D t;
     GUIStyle s;
@@ -99,7 +99,7 @@ public class UIManager : MonoBehaviour
 
             foreach (Collider c in Physics.OverlapSphere(center, Vector3.Distance(center, cubeStart), selectableLayers))
             {
-                _Selectable s = c.GetComponent<_Selectable>();
+                ISelectable s = c.GetComponent<ISelectable>();
                 if (s != null)
                 {
                     if (!s.Selected)
@@ -112,7 +112,7 @@ public class UIManager : MonoBehaviour
 
     }
 
-    public void AddSelected(_Selectable s)
+    public void AddSelected(ISelectable s)
     {
 
         if (selected.Count <= 0)
@@ -141,7 +141,7 @@ public class UIManager : MonoBehaviour
 
     }
 
-    public void RemoveSelected(_Selectable s)
+    public void RemoveSelected(ISelectable s)
     {
         selected.Remove(s);
         s.OnDeselected();
@@ -164,7 +164,7 @@ public class UIManager : MonoBehaviour
 
     }
 
-    public void UpdateSelectedView(_Selectable s)
+    public void UpdateSelectedView(ISelectable s)
     {
         Transform g = content.transform.FindChild(s.Name);
         g.FindChild("Description").GetComponent<Text>().text = s.Description;

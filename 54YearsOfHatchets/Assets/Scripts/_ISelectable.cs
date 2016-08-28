@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public interface _Selectable
+public interface ISelectable
 {
 
     string Name { get; set; }

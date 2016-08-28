@@ -42,6 +42,8 @@ public class GameManager : MonoBehaviour
 
         }
 
+        if (!freeMove) ResetCamera();
+
         if (freeMove)
         {
             if (Input.GetKey(KeyCode.W))
@@ -75,12 +77,13 @@ public class GameManager : MonoBehaviour
             else
                 return;
 
-            foreach (_Selectable s in thisUI.selected)
+         
+            foreach (ISelectable s in thisUI.selected)
             {
                 Person p = s.IGameObject.GetComponent<Person>();
                 if (p != null)
                 {
-                    p.Move(pos);
+                    p.MoveToTarget(pos);
                     thisUI.UpdateSelectedView(s);
                 }
 
