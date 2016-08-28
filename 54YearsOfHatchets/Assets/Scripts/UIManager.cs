@@ -12,6 +12,7 @@ public class UIManager : MonoBehaviour
     public Text Description;
     public Text Tooltip;
     public Text Health;
+    public Text HealthText;
 
     public GameObject OnHover;
 
@@ -194,7 +195,9 @@ public class UIManager : MonoBehaviour
         Name.text = name;
         Description.text = description;
         Tooltip.text = toolTip;
-        Health.gameObject.SetActive(false);
+        HealthText.gameObject.SetActive(false);
+        Health.text = "";
+
 
 
     }

@@ -4,8 +4,8 @@ using System.Collections;
 public class Pickup : MonoBehaviour, ISelectable
 {
 
-    string _description = "Sample pickup resource";
-    string _tooltip = "Left Click and Drag to Select";
+    public string _description = "Sample pickup resource";
+    public string _tooltip = "Left Click and Drag to Select";
     bool _selected = false;
     public Shader normal, highlighted;
     public Renderer r;
