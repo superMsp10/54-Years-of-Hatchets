@@ -30,7 +30,8 @@ public class UIManager : MonoBehaviour
     public GameObject content;
     public GameObject selectedPrefab;
 
-    public 
+    public Text yearNum;
+    public Text yearSpeed;
 
 
     void Awake()

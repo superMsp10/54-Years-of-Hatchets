@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using UnityStandardAssets.Cameras;
 using System.Collections.Generic;
@@ -18,6 +19,21 @@ public class GameManager : MonoBehaviour
     public Transform spawnSpot;
 
     UIManager thisUI;
+
+
+    public Light sun;
+    public float secondsInFullDay = 120f;
+    [Range(0, 1)]
+    public float currentTimeOfDay = 0;
+    [HideInInspector]
+    public float timeMultiplier = 1f;
+
+    float sunInitialIntensity;
+    public float minimumSunLight;
+
+    int years = 0;
+    bool warTime = false;
+
     void Awake()
     {
         thisGameManager = this;
@@ -27,6 +43,9 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         thisUI = UIManager.thisUI;
+        sunInitialIntensity = sun.intensity;
+        thisUI.yearNum.text = years.ToString();
+        thisUI.yearSpeed.text = "(X" + Time.timeScale.ToString() + ")";
 
         for (int i = 0; i < startPeople; i++)
         {
@@ -40,6 +59,44 @@ public class GameManager : MonoBehaviour
     void Update()
     {
 
+        UpdateControls();
+        UpdateSun();
+
+        currentTimeOfDay += (Time.deltaTime / secondsInFullDay) * timeMultiplier;
+
+        if (currentTimeOfDay >= 1)
+        {
+            currentTimeOfDay = 0;
+            years += 1;
+            thisUI.yearNum.text = years.ToString();
+        }
+
+        if (years >= 54 && warTime == false)
+        {
+            warTime = true;
+            Time.timeScale = 1f;
+            thisUI.yearSpeed.text = "(X" + Time.timeScale.ToString() + ")";
+            thisUI.yearSpeed.color = Color.grey;
+        }
+
+    }
+
+    void UpdateControls()
+    {
+        if (!warTime)
+        {
+            if (Input.GetKeyDown(KeyCode.RightArrow) && Time.timeScale <= 90f)
+            {
+                Time.timeScale += 5f;
+                thisUI.yearSpeed.text = "(X" + Time.timeScale.ToString() + ")";
+
+            }
+            else if (Input.GetKeyDown(KeyCode.LeftArrow) && Time.timeScale >= 5f)
+            {
+                Time.timeScale -= 5f;
+                thisUI.yearSpeed.text = "(X" + Time.timeScale.ToString() + ")";
+            }
+        }
         if (Input.GetKeyDown(KeyCode.Q) && Input.GetKey(KeyCode.LeftShift))
         {
             if (!freeMove)
@@ -132,6 +189,28 @@ public class GameManager : MonoBehaviour
 
 
         }
+
+    }
+
+    void UpdateSun()
+    {
+        sun.transform.localRotation = Quaternion.Euler(Mathf.Lerp(15, 165, currentTimeOfDay), 170, 0);
+
+        float intensityMultiplier = 1;
+        if (currentTimeOfDay <= 0.23f || currentTimeOfDay >= 0.75f)
+        {
+            intensityMultiplier = 0;
+        }
+        else if (currentTimeOfDay <= 0.25f)
+        {
+            intensityMultiplier = Mathf.Clamp01((currentTimeOfDay - 0.23f) * (1 / 0.02f));
+        }
+        else if (currentTimeOfDay >= 0.73f)
+        {
+            intensityMultiplier = Mathf.Clamp01(1 - ((currentTimeOfDay - 0.73f) * (1 / 0.02f)));
+        }
+
+        sun.intensity = (sunInitialIntensity * intensityMultiplier) + minimumSunLight;
     }
 
     public void ResetCamera()
