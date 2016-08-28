@@ -6,7 +6,7 @@ public class Person : MonoBehaviour, ISelectable
 {
 
     protected string _description = "";
-    protected string _tooltip = "Left Click and Drag to Select";
+    protected string _tooltip = "Left Click and Drag to Select, After selecting right click on any empty location to move there";
     public string Job = "";
     bool _selected = false;
 

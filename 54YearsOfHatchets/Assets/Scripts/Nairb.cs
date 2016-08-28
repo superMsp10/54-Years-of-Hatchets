@@ -6,8 +6,8 @@ public class Nairb : Person
 
     void Start()
     {
-        _description = "A person form the Nairb tribe";
-        _tooltip = "Attack";
+        _description = "A warriors form the Nairb tribe coming to attack you";
+        _tooltip = "Right click with people selected to attack";
         Job = "Attack";
         lastDamage = Time.time;
     }
@@ -38,4 +38,6 @@ public class Nairb : Person
         }
 
     }
+
+
 }

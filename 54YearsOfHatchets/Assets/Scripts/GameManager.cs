@@ -39,6 +39,8 @@ public class GameManager : MonoBehaviour
 
     public GameObject GOPanel;
     public GameObject ViewPanel;
+    public GameObject HelpPanel;
+
 
     void Awake()
     {
@@ -105,6 +107,25 @@ public class GameManager : MonoBehaviour
         thisUI.selectedView.SetActive(false);
         GOPanel.SetActive(true);
         ViewPanel.SetActive(false);
+        HelpPanel.SetActive(false);
+
+
+    }
+
+    public void Help()
+    {
+        thisUI.OnHover.SetActive(false);
+        thisUI.selectedView.SetActive(false);
+
+        ViewPanel.SetActive(false);
+        HelpPanel.SetActive(true);
+
+    }
+
+    public void Back()
+    {
+        ViewPanel.SetActive(true);
+        HelpPanel.SetActive(false);
 
     }
 
@@ -170,6 +191,7 @@ public class GameManager : MonoBehaviour
                     p.DropItem();
                 }
             }
+
         }
 
         if (!freeMove)
