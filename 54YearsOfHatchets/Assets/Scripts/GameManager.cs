@@ -89,21 +89,37 @@ public class GameManager : MonoBehaviour
             RaycastHit hit;
             Ray ray = cam.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out hit))
-                pos = hit.point;
+            {
+                Pickup pu = hit.collider.gameObject.GetComponent<Pickup>();
+                if (pu != null)
+                {
+                    foreach (ISelectable s in thisUI.selected)
+                    {
+                        Person p = s.IGameObject.GetComponent<Person>();
+                        if (p != null)
+                        {
+                            p.PickupItem(pu.pickUpType);
+                            thisUI.UpdateSelectedView(s);
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (ISelectable s in thisUI.selected)
+                    {
+                        Person p = s.IGameObject.GetComponent<Person>();
+                        if (p != null)
+                        {
+                            p.MoveToTarget(hit.point);
+                            thisUI.UpdateSelectedView(s);
+                        }
+                    }
+                }
+            }
             else
                 return;
 
 
-            foreach (ISelectable s in thisUI.selected)
-            {
-                Person p = s.IGameObject.GetComponent<Person>();
-                if (p != null)
-                {
-                    p.MoveToTarget(pos);
-                    thisUI.UpdateSelectedView(s);
-                }
-
-            }
         }
     }
 

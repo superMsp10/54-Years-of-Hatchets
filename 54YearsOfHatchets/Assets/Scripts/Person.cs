@@ -6,7 +6,7 @@ public class Person : MonoBehaviour, ISelectable
 {
 
     string _description = "A person from the Arcadio tribe";
-    string _tooltip = "Left Click to Select";
+    string _tooltip = "Left Click and Drag to Select";
     public string Job = "";
     bool _selected = false;
 
@@ -17,6 +17,10 @@ public class Person : MonoBehaviour, ISelectable
     public Renderer r;
 
     public float maxWanderDistance = 10f;
+
+    public Pickup pickedUP;
+    public float PickupDistance = 2f;
+    public LayerMask pickUps;
     // Use this for initialization
     void Start()
     {
@@ -64,7 +68,32 @@ public class Person : MonoBehaviour, ISelectable
 
     }
 
+    public void PickupItem(string pickupType)
+    {
+        if (pickedUP == null)
+        {
+            Job = "Harvesting";
+            foreach (Collider c in Physics.OverlapSphere(transform.position, PickupDistance, pickUps))
+            {
+                if (c.GetComponent(pickupType) != null)
+                {
+                    Pickup s = c.GetComponent<Pickup>();
+                    if (s != null)
+                    {
+                        if (!s.pickedUP)
+                        {
+                            s.transform.parent = transform;
+                            s.transform.localPosition = new Vector3(0, 1f, 0);
+                            pickedUP = s;
+                            s.pickedUP = true;
+                            return;
+                        }
 
+                    }
+                }
+            }
+        }
+    }
 
     public void MoveToTarget(Vector3 pos)
     {

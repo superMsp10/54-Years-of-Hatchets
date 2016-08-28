@@ -123,7 +123,7 @@ public class UIManager : MonoBehaviour
         s.OnSelected();
 
         GameObject g = (GameObject)Instantiate(selectedPrefab);
-        g.name = s.Name;
+        g.name = s.IGameObject.GetInstanceID().ToString();
         g.transform.parent = content.transform;
         g.transform.FindChild("Name").GetComponent<Text>().text = s.Name;
         g.transform.FindChild("Description").GetComponent<Text>().text = s.Description;
@@ -148,7 +148,7 @@ public class UIManager : MonoBehaviour
             selected.Remove(s);
             s.OnDeselected();
 
-            Destroy(content.transform.FindChild(s.Name).gameObject);
+            Destroy(content.transform.FindChild(s.IGameObject.GetInstanceID().ToString()).gameObject);
 
             if (selected.Count <= 0)
                 selectedView.SetActive(false);
@@ -182,7 +182,7 @@ public class UIManager : MonoBehaviour
 
     public void UpdateSelectedView(ISelectable s)
     {
-        Transform g = content.transform.FindChild(s.Name);
+        Transform g = content.transform.FindChild(s.IGameObject.GetInstanceID().ToString());
         g.FindChild("Description").GetComponent<Text>().text = s.Description;
         Person p = s.IGameObject.GetComponent<Person>();
         if (p != null)
