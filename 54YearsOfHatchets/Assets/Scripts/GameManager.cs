@@ -194,6 +194,25 @@ public class GameManager : MonoBehaviour
 
         }
 
+        if (Input.GetKeyDown(KeyCode.B))
+        {
+            foreach (ISelectable s in thisUI.selected)
+            {
+                Pickup p = s.IGameObject.GetComponent<Pickup>();
+                if (p != null)
+                {
+
+                }
+
+                Person per = s.IGameObject.GetComponent<Person>();
+                if (per != null)
+                {
+
+                }
+            }
+
+        }
+
         if (!freeMove)
             ResetCamera();
         else
