@@ -30,7 +30,8 @@ public class GameManager : MonoBehaviour
 
         for (int i = 0; i < startPeople; i++)
         {
-            GameObject g = (GameObject)Instantiate(person, spawnSpot.position, Quaternion.identity);
+            Vector3 randomDirection = UnityEngine.Random.insideUnitSphere * 10f;
+            GameObject g = (GameObject)Instantiate(person, spawnSpot.position + randomDirection, Quaternion.identity);
             people.Add(g.GetComponent<Person>());
         }
     }

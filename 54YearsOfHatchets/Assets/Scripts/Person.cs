@@ -26,6 +26,7 @@ public class Person : MonoBehaviour, ISelectable
     // Update is called once per frame
     void Update()
     {
+        if (target != null) agent.SetDestination(target);
         if (Job == "Moving")
         {
             if (!agent.pathPending)
@@ -60,7 +61,6 @@ public class Person : MonoBehaviour, ISelectable
             target = transform.position + randomDirection;
         }
 
-        if (target != null) agent.SetDestination(target);
 
     }
 
