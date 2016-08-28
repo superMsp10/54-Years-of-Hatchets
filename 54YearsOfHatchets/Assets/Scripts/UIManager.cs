@@ -30,7 +30,7 @@ public class UIManager : MonoBehaviour
     public GameObject content;
     public GameObject selectedPrefab;
 
-
+    public 
 
 
     void Awake()

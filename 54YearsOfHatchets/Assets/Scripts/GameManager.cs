@@ -31,7 +31,7 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < startPeople; i++)
         {
             Vector3 randomDirection = UnityEngine.Random.insideUnitSphere * 10f;
-            GameObject g = (GameObject)Instantiate(person, spawnSpot.position + randomDirection, Quaternion.identity);
+            GameObject g = (GameObject)Instantiate(person, new Vector3(spawnSpot.position.x + randomDirection.x, 0.5f, spawnSpot.position.z + randomDirection.z), Quaternion.identity);
             people.Add(g.GetComponent<Person>());
         }
     }
@@ -57,6 +57,17 @@ public class GameManager : MonoBehaviour
             thisUI.RemoveAll();
         }
 
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            foreach (ISelectable s in thisUI.selected)
+            {
+                Person p = s.IGameObject.GetComponent<Person>();
+                if (p != null)
+                {
+                    p.DropItem();
+                }
+            }
+        }
 
         if (!freeMove)
             ResetCamera();

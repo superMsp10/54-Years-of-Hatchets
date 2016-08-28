@@ -86,12 +86,24 @@ public class Person : MonoBehaviour, ISelectable
                             s.transform.localPosition = new Vector3(0, 1f, 0);
                             pickedUP = s;
                             s.pickedUP = true;
+                            Job = "Harvesting";
+
                             return;
                         }
 
                     }
                 }
             }
+        }
+    }
+
+    public void DropItem()
+    {
+        if (pickedUP != null)
+        {
+            pickedUP.transform.parent = null;
+            pickedUP.pickedUP = false;
+            pickedUP = null;
         }
     }
 
