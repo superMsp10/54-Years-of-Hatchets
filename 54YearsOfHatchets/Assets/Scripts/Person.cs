@@ -7,6 +7,7 @@ public class Person : MonoBehaviour, _Selectable
 
     string _description = "A person from the Arcadio tribe";
     string _tooltip = "Right Click to Select";
+    public string Job = "";
     bool _selected = false;
 
     public Shader normal, highlighted;
@@ -68,6 +69,14 @@ public class Person : MonoBehaviour, _Selectable
         get
         {
             return transform.position;
+        }
+    }
+
+    public GameObject IGameObject
+    {
+        get
+        {
+            return gameObject;
         }
     }
 

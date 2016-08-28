@@ -29,6 +29,11 @@ public class UIManager : MonoBehaviour
     bool dragging = false;
     public LayerMask selectableLayers;
 
+    public GameObject selectedView;
+    public GameObject content;
+    public GameObject selectedPrefab;
+
+
 
 
     void Awake()
@@ -53,7 +58,7 @@ public class UIManager : MonoBehaviour
     void Update()
     {
 
-        if (Input.GetKey(KeyCode.Q) && Input.GetKey(KeyCode.LeftShift))
+        if (Input.GetKeyDown(KeyCode.Q) && Input.GetKey(KeyCode.LeftShift))
         {
             if (!freeMove)
             {
@@ -155,15 +160,43 @@ public class UIManager : MonoBehaviour
 
     public void AddSelected(_Selectable s)
     {
+
+        if (selected.Count <= 0)
+            selectedView.SetActive(true);
+
         selected.Add(s);
 
         s.OnSelected();
+
+        GameObject g = (GameObject)Instantiate(selectedPrefab);
+        g.name = s.Name;
+        g.transform.parent = content.transform;
+        g.transform.FindChild("Name").GetComponent<Text>().text = s.Name;
+        g.transform.FindChild("Description").GetComponent<Text>().text = s.Description;
+
+        Person p = s.IGameObject.GetComponent<Person>();
+        if (p != null)
+        {
+            g.transform.FindChild("Job").GetComponent<Text>().text = p.Job;
+        }
+        else
+        {
+            g.transform.FindChild("Job").GetComponent<Text>().text = s.Tooltip;
+        }
+
+
     }
 
     public void RemoveSelected(_Selectable s)
     {
         selected.Remove(s);
         s.OnDeselected();
+
+        Destroy(content.transform.FindChild(s.Name).gameObject);
+
+        if (selected.Count <= 0)
+            selectedView.SetActive(false);
+
 
     }
 
