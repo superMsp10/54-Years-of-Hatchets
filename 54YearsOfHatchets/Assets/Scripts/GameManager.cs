@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour
     public Camera cam;
     bool freeMove = true;
     public GameObject collection;
+    public Text viewMode;
 
     public List<Person> people = new List<Person>();
     public int startPeople = 25;
@@ -55,6 +56,7 @@ public class GameManager : MonoBehaviour
         sunInitialIntensity = sun.intensity;
         thisUI.yearNum.text = years.ToString();
         thisUI.yearSpeed.text = "(X" + Time.timeScale.ToString() + ")";
+        viewMode.text = "View: Free";
 
         for (int i = 0; i < startPeople; i++)
         {
@@ -87,6 +89,15 @@ public class GameManager : MonoBehaviour
             currentTimeOfDay = 0;
             years += 1;
             thisUI.yearNum.text = years.ToString();
+            foreach (House s in FindObjectsOfType<House>())
+            {
+                s.spawn();
+            }
+
+            if (UnityEngine.Random.Range(0, 14) == 1)
+            {
+                SpawnEnemies(UnityEngine.Random.Range(1, 10));
+            }
         }
 
         if (years == 54 && warTime == false)
@@ -104,6 +115,7 @@ public class GameManager : MonoBehaviour
 
     public void GameOver()
     {
+        Time.timeScale = 1;
         thisUI.OnHover.SetActive(false);
         thisUI.selectedView.SetActive(false);
         GOPanel.SetActive(true);
@@ -216,9 +228,15 @@ public class GameManager : MonoBehaviour
         }
 
         if (!freeMove)
+        {
             ResetCamera();
+            viewMode.text = "View: Selected";
+
+        }
         else
         {
+            viewMode.text = "View: Free";
+
             if (Input.GetKey(KeyCode.W))
             {
                 camController.transform.Translate(Vector3.forward);
