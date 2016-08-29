@@ -68,6 +68,10 @@ public class CraftingManager : MonoBehaviour
                 thisUI.RemoveSelected(destroy[i]);
                 Destroy(destroy[i].IGameObject);
             }
+            Vector3 randomDirection = UnityEngine.Random.insideUnitSphere * wantedDistance;
+            Instantiate(axe, new Vector3(craftArea.position.x + randomDirection.x, 1f, craftArea.position.z + randomDirection.z), Quaternion.identity);
+
+
         }
         else
         {
@@ -79,6 +83,8 @@ public class CraftingManager : MonoBehaviour
     void ResourceCount()
     {
         resources.Clear();
+        sticks = 0;
+        rocks = 0;
         foreach (ISelectable s in thisUI.selected)
         {
             if (Vector3.Distance(s.IGameObject.transform.position, craftArea.position) < wantedDistance)

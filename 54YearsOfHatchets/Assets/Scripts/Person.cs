@@ -134,6 +134,11 @@ public class Person : MonoBehaviour, ISelectable
                     {
                         if (!s.pickedUP)
                         {
+                            if (s.pickUpType == "Mace")
+                            {
+                                damage += 10;
+                                health += 50;
+                            }
                             s.transform.parent = transform;
                             s.transform.localPosition = new Vector3(0, 1f, 0);
                             pickedUP = s;
