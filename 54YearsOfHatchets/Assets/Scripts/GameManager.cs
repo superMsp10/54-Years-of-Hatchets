@@ -40,7 +40,8 @@ public class GameManager : MonoBehaviour
     public GameObject GOPanel;
     public GameObject ViewPanel;
     public GameObject HelpPanel;
-
+    public GameObject CraftPanel;
+    private bool crafting;
 
     void Awake()
     {
@@ -108,6 +109,7 @@ public class GameManager : MonoBehaviour
         GOPanel.SetActive(true);
         ViewPanel.SetActive(false);
         HelpPanel.SetActive(false);
+        CraftPanel.SetActive(false);
 
 
     }
@@ -116,7 +118,8 @@ public class GameManager : MonoBehaviour
     {
         thisUI.OnHover.SetActive(false);
         thisUI.selectedView.SetActive(false);
-
+        CraftPanel.SetActive(false);
+        crafting = false;
         ViewPanel.SetActive(false);
         HelpPanel.SetActive(true);
 
@@ -164,6 +167,7 @@ public class GameManager : MonoBehaviour
                 thisUI.yearSpeed.text = "(X" + Time.timeScale.ToString() + ")";
             }
         }
+
         if (Input.GetKeyDown(KeyCode.Q) && Input.GetKey(KeyCode.LeftShift))
         {
             if (!freeMove)
@@ -196,19 +200,17 @@ public class GameManager : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.B))
         {
-            foreach (ISelectable s in thisUI.selected)
+            if (!crafting)
             {
-                Pickup p = s.IGameObject.GetComponent<Pickup>();
-                if (p != null)
-                {
+                CraftPanel.SetActive(true);
+                crafting = true;
 
-                }
+            }
+            else
+            {
+                CraftPanel.SetActive(false);
+                crafting = false;
 
-                Person per = s.IGameObject.GetComponent<Person>();
-                if (per != null)
-                {
-
-                }
             }
 
         }
