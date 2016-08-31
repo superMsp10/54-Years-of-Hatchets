@@ -74,8 +74,8 @@ public class CraftingManager : MonoBehaviour
                 thisUI.RemoveSelected(destroy[i]);
                 Destroy(destroy[i].IGameObject);
             }
-            Vector3 randomDirection = UnityEngine.Random.insideUnitSphere * wantedDistance;
-            Instantiate(axe, new Vector3(craftArea.position.x + randomDirection.x, 1f, craftArea.position.z + randomDirection.z), Quaternion.identity);
+            Vector3 randomDirection = UnityEngine.Random.insideUnitSphere * 2f;
+            Instantiate(axe, new Vector3(craftArea.position.x + randomDirection.x, 2f, craftArea.position.z + randomDirection.z), Quaternion.identity);
 
 
         }

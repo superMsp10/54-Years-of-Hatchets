@@ -158,6 +158,14 @@ public class Person : MonoBehaviour, ISelectable
     {
         if (pickedUP != null)
         {
+
+
+            if (pickedUP.pickUpType == "Mace")
+            {
+                damage -= 10;
+                health -= 50;
+            }
+
             pickedUP.transform.parent = null;
             pickedUP.pickedUP = false;
             pickedUP = null;
